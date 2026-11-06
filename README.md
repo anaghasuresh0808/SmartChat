@@ -1,16 +1,19 @@
 # SmartChat – AI Chatbot
 
-SmartChat is an AI-powered conversational chatbot built using Python, Flask, and Google's Gemini API. It provides interactive conversations through a simple web interface.
+SmartChat is an AI-powered conversational chatbot developed using Python, Flask, and Google's Gemini API. It provides interactive, context-aware conversations through a simple and user-friendly web interface.
 
 ## Features
 
-- AI-powered responses using Gemini API.
+- AI-powered responses using the Google Gemini API.
 - Multi-turn conversational memory.
 - Separate conversation histories using unique conversation IDs.
-- Context management using the last 10 messages.
-- Custom system prompt and chatbot personality.
-- Error handling for API failures.
+- Context-window management using the last 10 messages.
+- Custom system prompt to define chatbot personality.
+- Input validation for missing, empty, and invalid messages.
+- Error handling for API failures and timeout errors.
+- Markdown formatting for bold text, headings, bullet points, and numbered lists.
 - Interactive web interface using HTML, CSS, and JavaScript.
+- Typing indicator while generating responses.
 - Start a new conversation whenever needed.
 
 ## Technologies Used
@@ -18,9 +21,11 @@ SmartChat is an AI-powered conversational chatbot built using Python, Flask, and
 - Python
 - Flask
 - Google Gemini API
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript
+- Marked.js
+- DOMPurify
 - Postman
 - Git and GitHub
 
@@ -32,6 +37,7 @@ SmartChat/
 ├── app.py
 ├── requirements.txt
 ├── README.md
+├── TESTING_REPORT.md
 ├── .gitignore
 │
 ├── templates/
@@ -42,7 +48,7 @@ SmartChat/
     └── script.js
 ```
 
-The `.env` file stores the Gemini API key locally and is excluded from GitHub.
+The `.env` file stores the Gemini API key locally and is excluded from GitHub using `.gitignore`.
 
 ## Installation and Setup
 
@@ -66,7 +72,7 @@ python -m venv venv
 
 ### 4. Activate the virtual environment
 
-Windows CMD:
+For Windows CMD:
 
 ```bash
 venv\Scripts\activate.bat
@@ -78,7 +84,7 @@ venv\Scripts\activate.bat
 pip install -r requirements.txt
 ```
 
-### 6. Configure the API key
+### 6. Configure the Gemini API key
 
 Create a `.env` file in the project root directory.
 
@@ -96,15 +102,39 @@ Never upload your actual API key to GitHub.
 python app.py
 ```
 
-Open your browser:
+Open your browser and visit:
 
 ```text
 http://127.0.0.1:5000/
 ```
 
-## API Endpoint
+## API Endpoints
+
+### 1. Home Endpoint
+
+**GET /**
+
+Displays the SmartChat web interface.
+
+### 2. Health Check Endpoint
+
+**GET /health**
+
+Checks whether the Flask application is running.
+
+Example response:
+
+```json
+{
+    "status": "OK"
+}
+```
+
+### 3. Chat Endpoint
 
 **POST /chat**
+
+Accepts user messages and generates AI-powered responses.
 
 Example request:
 
@@ -115,12 +145,36 @@ Example request:
 }
 ```
 
-The endpoint returns a JSON response containing the conversation ID and the chatbot's reply.
+Example response:
+
+```json
+{
+    "conversation_id": "test123",
+    "reply": "Hello! How can I help you today?"
+}
+```
+
+## Testing
+
+The application was tested using Postman and the web interface.
+
+Testing includes:
+
+- Valid message submission.
+- Missing and empty message validation.
+- Invalid input validation.
+- Multi-turn conversation memory.
+- Conversation isolation.
+- New conversation functionality.
+- Health-check endpoint.
+- Frontend and backend communication.
+
+Refer to `TESTING_REPORT.md` for detailed test cases and results.
 
 ## Future Improvements
 
-- Conversation summarisation for longer chats.
-- Persistent conversation storage.
+- Conversation summarisation for longer conversations.
+- Persistent conversation storage using a database.
 - User authentication.
 - Improved chatbot interface.
 - Deployment to a cloud platform.
