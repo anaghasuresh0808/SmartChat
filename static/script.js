@@ -20,9 +20,14 @@ function addMessage(message, sender) {
 
     const content = document.createElement("div");
     content.classList.add("message-content");
-
-    // Display message safely as text
+// Format AI responses using Markdown
+if (sender === "bot") {
+    const formattedMessage = marked.parse(message);
+    content.innerHTML = DOMPurify.sanitize(formattedMessage);
+} else {
+    // Display user messages safely as plain text
     content.textContent = message;
+}
 
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(content);
@@ -69,11 +74,21 @@ async function sendMessage() {
 
         });
 
-        const data = await response.json();
+        let data;
 
-        if (!response.ok) {
-            throw new Error(data.error || "Something went wrong.");
-        }
+try {
+    data = await response.json();
+} catch {
+    throw new Error("Invalid response from the server.");
+}
+
+if (!response.ok) {
+    throw new Error(data.error || "Something went wrong.");
+}
+
+if (!data.reply) {
+    throw new Error("The chatbot returned an empty response.");
+}
 
         // Display AI response
         addMessage(data.reply, "bot");

@@ -10,6 +10,7 @@
 
     <div class="chat-container">
 
+        <!-- Chat Header -->
         <header class="chat-header">
             <div class="logo">S</div>
             <div class="header-text">
@@ -19,21 +20,22 @@
             <span class="status">● Online</span>
         </header>
 
+        <!-- Chat Messages -->
         <main class="chat-box" id="chat-box">
+
             <div class="message bot-message">
                 <div class="avatar">S</div>
-                <div class="message-content">
-                    Hello! 👋 Welcome to SmartChat.
-                    <br><br>
-                    I'm your AI assistant. How can I help you today?
-                </div>
-            </div>
+
+        <div class="message-content">Hello! 👋 Welcome to SmartChat.<br>I'm your AI assistant. How can I help you today?</div>
+
         </main>
 
+        <!-- Typing Indicator -->
         <div class="typing-indicator" id="typing-indicator">
             SmartChat is thinking...
         </div>
 
+        <!-- Chat Input -->
         <footer class="chat-footer">
             <input
                 type="text"
@@ -44,13 +46,20 @@
             <button id="send-btn" onclick="sendMessage()">Send ➤</button>
         </footer>
 
+        <!-- New Conversation Button -->
         <button class="new-chat-btn" onclick="newConversation()">
             + New Conversation
         </button>
 
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- Markdown formatting -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+<!-- HTML sanitization -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+<!-- SmartChat JavaScript -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

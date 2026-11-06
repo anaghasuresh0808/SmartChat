@@ -22,6 +22,7 @@ client = genai.Client(
         timeout=30000
     )
 )
+
 # Store conversation history
 conversations = {}
 
@@ -42,6 +43,7 @@ def home():
 def health():
     return jsonify({"status": "OK"})
 
+
 # Chat endpoint
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -52,11 +54,20 @@ def chat():
         if not data or "message" not in data:
             return jsonify({"error": "Message is required"}), 400
 
-        message = data["message"].strip()
-        conversation_id = data.get("conversation_id", "default")
+        message = data["message"]
+
+        if not isinstance(message, str):
+            return jsonify({"error": "Message must be a string"}), 400
+
+        message = message.strip()
 
         if not message:
             return jsonify({"error": "Message cannot be empty"}), 400
+
+        conversation_id = data.get("conversation_id", "default")
+
+        if not isinstance(conversation_id, str) or not conversation_id.strip():
+            return jsonify({"error": "Invalid conversation ID"}), 400
 
         # Create conversation if it does not exist
         if conversation_id not in conversations:
@@ -64,14 +75,14 @@ def chat():
 
         history = conversations[conversation_id]
 
-        # Keep the last 8 messages (4 complete exchanges)
-        history = history[-8:]
-
         # Add new user message
         history.append({
             "role": "user",
             "parts": [{"text": message}]
         })
+
+        # Keep the last 10 messages
+        history = history[-10:]
 
         # Send conversation to Gemini
         response = client.models.generate_content(
@@ -84,12 +95,16 @@ def chat():
 
         bot_reply = response.text
 
+        if not bot_reply:
+            raise ValueError("Gemini returned an empty response.")
+
         # Store bot response
         history.append({
             "role": "model",
             "parts": [{"text": bot_reply}]
         })
 
+        # Keep the last 10 messages
         conversations[conversation_id] = history[-10:]
 
         return jsonify({
@@ -110,6 +125,7 @@ def chat():
         return jsonify({
             "error": "Something went wrong while processing your request. Please try again."
         }), 500
+
 
 # Run application
 if __name__ == "__main__":
