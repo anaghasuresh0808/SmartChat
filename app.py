@@ -12,8 +12,16 @@ app = Flask(__name__)
 
 # Connect to Gemini
 api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
 
+if not api_key:
+    raise ValueError("GEMINI_API_KEY is missing. Please check your .env file.")
+
+client = genai.Client(
+    api_key=api_key,
+    http_options=types.HttpOptions(
+        timeout=30000
+    )
+)
 # Store conversation history
 conversations = {}
 
@@ -33,7 +41,6 @@ def home():
 @app.route("/health")
 def health():
     return jsonify({"status": "OK"})
-
 
 # Chat endpoint
 @app.route("/chat", methods=["POST"])
@@ -57,14 +64,14 @@ def chat():
 
         history = conversations[conversation_id]
 
-        # Add user message
+        # Keep the last 8 messages (4 complete exchanges)
+        history = history[-8:]
+
+        # Add new user message
         history.append({
             "role": "user",
             "parts": [{"text": message}]
         })
-
-        # Keep only the last 10 messages
-        history = history[-10:]
 
         # Send conversation to Gemini
         response = client.models.generate_content(
@@ -91,12 +98,18 @@ def chat():
         })
 
     except Exception as e:
+        error_message = str(e).lower()
+
         print("Gemini Error:", str(e))
 
-        return jsonify({
-            "error": str(e)
-        }), 500
+        if "timeout" in error_message or "timed out" in error_message:
+            return jsonify({
+                "error": "The request timed out. Please try again."
+            }), 504
 
+        return jsonify({
+            "error": "Something went wrong while processing your request. Please try again."
+        }), 500
 
 # Run application
 if __name__ == "__main__":
