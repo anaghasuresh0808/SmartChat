@@ -31,7 +31,7 @@ SmartChat/
 │
 ├── app.py
 ├── requirements.txt
-├── .env
+├── README.md
 ├── .gitignore
 │
 ├── templates/
@@ -42,12 +42,14 @@ SmartChat/
     └── script.js
 ```
 
+The `.env` file stores the Gemini API key locally and is excluded from GitHub.
+
 ## Installation and Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/anaghasuresh0808/SmartChat.git
 ```
 
 ### 2. Navigate to the project folder
@@ -113,14 +115,7 @@ Example request:
 }
 ```
 
-Example response:
-
-```json
-{
-    "conversation_id": "test123",
-    "reply": "Hello! How can I help you today?"
-}
-```
+The endpoint returns a JSON response containing the conversation ID and the chatbot's reply.
 
 ## Future Improvements
 
@@ -132,4 +127,4 @@ Example response:
 
 ## Author
 
-Developed as an internship project to explore AI-powered conversational applications using Python and Large Language Models.
+Developed as an internship project to explore AI-powered conversational applications using Python, Flask, and Large Language Models.
